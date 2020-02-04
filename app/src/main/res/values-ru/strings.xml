@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">Weather</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_cities">Города</string>
+    <string name="menu_add">Добавить город</string>
+    <string name="menu_history">История</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_company">О разработчике</string>
+    <string name="menu_feedback">Обратная связь</string>
+    <string name="enter_city">Введите город</string>
+    <string name="author">Автор</string>
+    <string name="cancel">Отмена</string>
+    <string name="exit">Выход</string>
+
+    <string name="city_default">Москва</string>
+
+    <string name="updated">Обновлено: </string>
+    <string name="vendor">JopaWeather</string>
+
+    <string name="humidity">Влажность</string>
+    <string name="wind">Ветер</string>
+    <string name="direction">Направление</string>
+    <string name="speed">Скорость</string>
+
+    <string name="add">+</string>
+    <string name="unit_deg">°</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_speed">м/с</string>
+    <string name="delimiter">/</string>
+
+    <string name="north">С</string>
+    <string name="north_east">С-В</string>
+    <string name="east">В</string>
+    <string name="south_east">Ю-В</string>
+    <string name="south">Ю</string>
+    <string name="south_west">Ю-З</string>
+    <string name="west">З</string>
+    <string name="north_west">С-З</string>
+
+    <string name="rain">Дождь</string>
+    <string name="cloudy">Облачно</string>
+    <string name="party_cloudy">Переменная облачность</string>
+    <string name="sunny">Солнечно</string>
+    <string name="snow">Снег</string>
+
+    <string name="theme">Тема</string>
+    <string name="light">Светлая</string>
+    <string name="dark">Темная</string>
+
+    <string name="name">Имя</string>
+    <string name="email">Email</string>
+    <string name="message">Сообщение</string>
+    <string name="send">Отправить</string>
+
+    <string name="element_number">Элемент номер </string>
+
+    <string name="search">Поиск</string>
+    <string name="edit">Редактировать</string>
+    <string name="remove">Удалить</string>
+    <string name="clear">Очистить</string>
+    <string name="more">Больше</string>
+    <string name="action_not_found">Действие не найдено</string>
+
+
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+</resources>
