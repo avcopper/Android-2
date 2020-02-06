@@ -1,24 +1,29 @@
 package com.example.weather.ui.home;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +57,9 @@ public class HomeFragment extends Fragment implements Constants {
     private static final String WEATHER_URL_CITY = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&appid=" + WEATHER_API_KEY + "&q=";
     private static final String WEATHER_URL_CITY_HOURLY = "https://samples.openweathermap.org/data/2.5/forecast/hourly?London,us&appid=" + WEATHER_API_KEY + "&q=";
 
+    private WebView web;
+    private LinearLayout loaderContainer;
+    private ScrollView scrollView;
     private String currentCity;
     private TextView cityContainer;
     private TextView tempCurrentContainer;
@@ -64,35 +72,18 @@ public class HomeFragment extends Fragment implements Constants {
     private LinearLayout humidityContainer;
     private LinearLayout windContainer;
 
-    private HomeViewModel homeViewModel;
-
-//    public static HomeFragment create(Parcel parcel) {
-//        HomeFragment f = new HomeFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable(PARCEL, parcel);
-//        f.setArguments(args);
-//        return f;
-//    }
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-
-//        final TextView textView = root.findViewById(R.id.text_home);
-//        homeViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-        return root;
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("test1: ", String.valueOf(555555));
+
+        web                  = view.findViewById(R.id.webView);
+        loaderContainer      = view.findViewById(R.id.loader_container);
+        scrollView           = view.findViewById(R.id.scrollView2);
+
         ImageView changeCity = view.findViewById(R.id.changeCity);
         ImageView reload     = view.findViewById(R.id.reload);
         cityContainer        = view.findViewById(R.id.fragment_main_city);
@@ -106,7 +97,7 @@ public class HomeFragment extends Fragment implements Constants {
         windDirection        = view.findViewById(R.id.main_direction);
         updated              = view.findViewById(R.id.updated);
 
-        checkSettings();
+//        checkSettings();
 
         Parcel parcel = getParcel();
 
@@ -120,6 +111,14 @@ public class HomeFragment extends Fragment implements Constants {
             if (activity != null) {
                 SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
                 currentCity = sharedPreferences.getString(CITY, getResources().getString(R.string.city_default));
+
+                humidityContainer.setVisibility(sharedPreferences.getBoolean(HUMIDITY_CONTAINER, true) ? View.VISIBLE : View.GONE);
+                windContainer.setVisibility(sharedPreferences.getBoolean(WIND_CONTAINER, true) ? View.VISIBLE : View.GONE);
+
+                SharedPreferences.Editor ed = sharedPreferences.edit();
+                ed.putBoolean(VISIBILITY_CHANGED, false);
+                ed.apply();
+
             } else {
                 currentCity = getResources().getString(R.string.city_default);
             }
@@ -162,19 +161,33 @@ public class HomeFragment extends Fragment implements Constants {
         recyclerViewDay.setAdapter(new RecyclerAdapterDay(parcelDay));
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == -1 && requestCode == 1) {
-            checkSettings();
-
             Parcel parcel = (Parcel)data.getExtras().getSerializable(CITY);
             if (parcel != null) {
                 if (parcel.city != null) loadWeatherOnMain(parcel.city);
+            } else {
+                checkSettings();
             }
+        }
+    }
+
+    private void checkSettings() {
+        Activity activity = getActivity();
+
+        if (activity != null) {
+            SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+            cityContainer.setText(sharedPreferences.getString(CITY, getResources().getString(R.string.city_default)));
+            tempCurrentContainer.setText(sharedPreferences.getString(TEMP_CURRENT, ""));
+            tempRangeContainer.setText(sharedPreferences.getString(TEMP_RANGE, ""));
+            humidityValue.setText(sharedPreferences.getString(HUMIDITY, ""));
+            windValue.setText(sharedPreferences.getString(WIND, ""));
+            windDirection.setText(sharedPreferences.getString(WIND_DIRECTION, ""));
+            weatherContainer.setText(sharedPreferences.getString(WEATHER, ""));
+            updated.setText(sharedPreferences.getString(UPDATED, ""));
         }
     }
 
@@ -188,15 +201,6 @@ public class HomeFragment extends Fragment implements Constants {
         return (Parcel)((getArguments() != null) ? getArguments().getSerializable(PARCEL) : null);
     }
 
-    private void checkSettings() {
-        Activity activity = getActivity();
-
-        if (activity != null) {
-            SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
-            humidityContainer.setVisibility(sharedPreferences.getBoolean(HUMIDITY, true) ? View.VISIBLE : View.GONE);
-            windContainer.setVisibility(sharedPreferences.getBoolean(WIND, true) ? View.VISIBLE : View.GONE);
-        }
-    }
 
     private void checkState(Bundle savedInstanceState) {
         String city           = savedInstanceState.getString(CITY);
@@ -270,9 +274,10 @@ public class HomeFragment extends Fragment implements Constants {
 
     private void loadWeatherOnMain(final String currentCity)
     {
+        showLoader();
         cityContainer.setText(currentCity);
 
-        Activity activity = getActivity();
+        final FragmentActivity activity = getActivity();
         if (activity != null) {
             SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
             SharedPreferences.Editor ed = sharedPreferences.edit();
@@ -303,26 +308,26 @@ public class HomeFragment extends Fragment implements Constants {
                             @Override
                             public void run() {
                                 displayWeather(weatherRequest);
+                                hideLoader();
                             }
                         });
                     } catch (FileNotFoundException e) {
+                        if (activity != null) showDialog(getResources().getString(R.string.alert_error_city));
                         Log.d("error: ", "City not found", e);
 //                        e.printStackTrace();
                     } catch (Exception e) {
+                        if (activity != null) showDialog(getResources().getString(R.string.alert_error_connection));
                         Log.d("error: ", "Fail connection", e);
                         e.printStackTrace();
                     } finally {
                         Log.d("reload: ", "6. Close connection");
-
-                        if (null != urlConnection) {
-                            urlConnection.disconnect();
-                        }
+                        if (null != urlConnection) urlConnection.disconnect();
                     }
                 }
             }).start();
         } catch (MalformedURLException e) {
-            Log.d("error: ", "Fail URI");
-//            e.printStackTrace();
+            showDialog(getResources().getString(R.string.alert_error_uri));
+            Log.d("error: ","Fail URI");
         }
     }
 
@@ -350,6 +355,9 @@ public class HomeFragment extends Fragment implements Constants {
         String direction = getWindDirection(degrees);
 
         String weather = getCloudy(weatherRequest.getClouds().getAll(), humidity, temp);
+        String date = MessageFormat.format("{0}{1}{2}", getResources().getString(R.string.updated), " ", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
+
+        saveSettings(tempData, tempRange, humidityData, speedData, direction, weather, date);
 
         tempCurrentContainer.setText(tempData);
         tempRangeContainer.setText(tempRange);
@@ -357,7 +365,44 @@ public class HomeFragment extends Fragment implements Constants {
         windValue.setText(speedData);
         windDirection.setText(direction);
         weatherContainer.setText(weather);
-        updated.setText(MessageFormat.format("{0}{1}{2}", getResources().getString(R.string.updated), " ", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(Calendar.getInstance().getTime())));
+        updated.setText(date);
+    }
+
+    private void saveSettings(String temp, String range, String humidity, String wind, String wind_direction, String weather, String updated) {
+        Activity activity = getActivity();
+
+        if (activity != null) {
+            SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+            SharedPreferences.Editor ed = sharedPreferences.edit();
+            ed.putString(TEMP_CURRENT, temp);
+            ed.putString(TEMP_RANGE, range);
+            ed.putString(HUMIDITY, humidity);
+            ed.putString(WIND, wind);
+            ed.putString(WIND_DIRECTION, wind_direction);
+            ed.putString(WEATHER, weather);
+            ed.putString(UPDATED, updated);
+            ed.apply();
+        }
+    }
+
+    private void showDialog(final String message) {
+        final FragmentActivity activity = getActivity();
+        if (activity != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(R.string.alert_header_error)
+                    .setMessage(message)
+                    .setIcon(R.mipmap.ic_launcher_round)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.alert_button_ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
+            Toast.makeText(activity, getResources().getString(R.string.alert_header_error), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private String getWindDirection(float degrees)
@@ -400,5 +445,20 @@ public class HomeFragment extends Fragment implements Constants {
             weather = getResources().getString(R.string.sunny);
         }
         return weather;
+    }
+
+    private void showLoader()
+    {
+        web.setBackgroundColor(Color.TRANSPARENT);
+        web.loadUrl("file:///android_asset/loader.gif");
+
+        loaderContainer.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideLoader()
+    {
+        loaderContainer.setVisibility(View.GONE);
+        scrollView.setVisibility(View.VISIBLE);
     }
 }

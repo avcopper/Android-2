@@ -63,11 +63,16 @@
     <string name="more">More</string>
     <string name="action_not_found">Action not found</string>
 
+    <string name="alert_header_error">Error!</string>
+    <string name="alert_header_warning">Warning!</string>
+    <string name="alert_message_city">City is not found! Try to enter another city.</string>
+    <string name="alert_message_reboot">The changes will takes after app restart.</string>
+    <string name="alert_button_ok">OK</string>
+    <string name="alert_button_understand">UNDERSTAND</string>
+    <string name="alert_error_city">City is not found!</string>
+    <string name="alert_error_connection">Fail connection!</string>
+    <string name="alert_error_uri">Fail URI connection!</string>
 
-
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>

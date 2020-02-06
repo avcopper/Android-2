@@ -24,17 +24,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class CitiesFragment extends Fragment implements Constants {
     private final static int REQUEST_CODE = 2;
-    private boolean isExistSecondView;
 
     public CitiesFragment() {
-    }
-
-    public static CitiesFragment create(Parcel parcel) {
-        CitiesFragment f = new CitiesFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(PARCEL, parcel);
-        f.setArguments(args);
-        return f;
     }
 
     @Override
@@ -61,7 +52,6 @@ public class CitiesFragment extends Fragment implements Constants {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_city);
         recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(view, LinearLayoutManager.VERTICAL, false));
         RecyclerAdapterCity adapter = new RecyclerAdapterCity(parcel);
         recyclerView.setAdapter(adapter);
 
@@ -90,7 +80,6 @@ public class CitiesFragment extends Fragment implements Constants {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == -1 && requestCode == 2) {
-//            city.setText(data.getStringExtra(CITY));
             Parcel parcel = (Parcel)data.getExtras().getSerializable(CITY);
 
             if (parcel != null) {
@@ -103,7 +92,6 @@ public class CitiesFragment extends Fragment implements Constants {
 
                     RecyclerView recyclerView = getActivity().findViewById(R.id.recycler_view_city);
                     recyclerView.setHasFixedSize(true);
-//                recyclerView.setLayoutManager(new LinearLayoutManager(view, LinearLayoutManager.VERTICAL, false));
                     RecyclerAdapterCity adapter = new RecyclerAdapterCity(parcel);
                     recyclerView.setAdapter(adapter);
 
@@ -123,7 +111,6 @@ public class CitiesFragment extends Fragment implements Constants {
 
     private void showCityAddition() {
         Intent intent = new Intent(getActivity(), AddActivity.class);
-//        intent.putExtra(PARCEL, parcel);
         startActivityForResult(intent, REQUEST_CODE);
     }
 }

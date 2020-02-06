@@ -1,20 +1,24 @@
 package com.example.weather.ui.add;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
+
 import com.example.weather.Constants;
 import com.example.weather.Parcel;
 import com.example.weather.R;
@@ -28,29 +32,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class AddFragment extends Fragment implements Constants {
 //    private static final String WEATHER_API_KEY = "50827a7213ada81bde07134eec5501f3";
     private static final String WEATHER_API_KEY = "0240835eed185923190f675bf4e672cc";
     private static final String WEATHER_URL_CITY = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&appid=" + WEATHER_API_KEY + "&q=";
 
-    private AddViewModel addViewModel;
     private TextInputEditText inputAddCity;
-    private String newCity;
     private Pattern checkCity = Pattern.compile("^[a-zA-Zа-яё]{2,}$");
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        addViewModel = ViewModelProviders.of(this).get(AddViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_add, container, false);
-
-//        final TextView textView = root.findViewById(R.id.text_gallery);
-//        galleryViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-        return root;
+        return inflater.inflate(R.layout.fragment_add, container, false);
     }
 
     @Override
@@ -64,18 +57,18 @@ public class AddFragment extends Fragment implements Constants {
         buttonCityAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Editable c = inputAddCity.getText();
+            Editable c = inputAddCity.getText();
 
-                if (c != null) {
-                    String city = c.toString();
-                    if (!city.equals("")) {
-                        city = firstUpperCase(city);
-                        Boolean check = validate(inputAddCity, checkCity, "Русские/английские буквы, не менее 2-х!");
-                        if (check) {
-                            getWeatherByCityName(city, inputAddCity);
-                        }
+            if (c != null) {
+                String city = c.toString();
+                if (!city.equals("")) {
+                    city = firstUpperCase(city);
+                    Boolean check = validate(inputAddCity, checkCity, "Русские/английские буквы, не менее 2-х!");
+                    if (check) {
+                        getWeatherByCityName(city, inputAddCity);
                     }
                 }
+            }
             }
         });
 
@@ -86,40 +79,8 @@ public class AddFragment extends Fragment implements Constants {
                 if (activity != null) {
                     activity.finish();
                 }
-
             }
         });
-    }
-
-    private void showCities(Parcel parcel) {
-        Intent intent = new Intent();
-//            intent.putExtra(CITY, inputAddCity.getText().toString());
-        intent.putExtra(CITY, parcel);
-
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            activity.setResult(RESULT_OK, intent);
-            activity.finish();
-        }
-    }
-
-    private Boolean validate(TextView tv, Pattern check, String message){
-        String value = tv.getText().toString();
-        if (check.matcher(value).matches()){
-            hideError(tv);
-            return true;
-        } else {
-            showError(tv, message);
-            return false;
-        }
-    }
-
-    private void showError(TextView view, String message) {
-        view.setError(message);
-    }
-
-    private void hideError(TextView view) {
-        view.setError(null);
     }
 
     private void getWeatherByCityName(final String currentCity, final TextInputEditText inputAddCity)
@@ -140,6 +101,7 @@ public class AddFragment extends Fragment implements Constants {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                saveSettings(currentCity);
                                 Parcel parcel = new Parcel();
                                 parcel.city = currentCity;
                                 showCities(parcel);
@@ -149,7 +111,7 @@ public class AddFragment extends Fragment implements Constants {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                showError(inputAddCity, "Город не найден!");
+                                showError(inputAddCity, getResources().getString(R.string.alert_error_city));
                             }
                         });
                         e.printStackTrace();
@@ -165,6 +127,69 @@ public class AddFragment extends Fragment implements Constants {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showCities(Parcel parcel) {
+        Intent intent = new Intent();
+        intent.putExtra(CITY, parcel);
+
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            activity.setResult(RESULT_OK, intent);
+            activity.finish();
+        }
+    }
+
+    private void saveSettings(String value) {
+        Activity activity = getActivity();
+
+        if (activity != null) {
+            SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+            SharedPreferences.Editor ed = sharedPreferences.edit();
+            ed.putString(CITY, value);
+            ed.apply();
+            Toast.makeText(getActivity(), CITY + " - " + value, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Boolean validate(TextView tv, Pattern check, String message){
+        String value = tv.getText().toString();
+        if (check.matcher(value).matches()){
+            hideError(tv);
+            return true;
+        } else {
+            showError(tv, message);
+            return false;
+        }
+    }
+
+    private void showError(final TextView view, String message) {
+        view.setError(message);
+        final FragmentActivity activity = getActivity();
+        if (activity != null) {
+            showDialog(activity, view);
+        }
+    }
+
+    private void hideError(TextView view) {
+        view.setError(null);
+    }
+
+    private void showDialog(FragmentActivity activity, final TextView view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.alert_header_error)
+                .setMessage(R.string.alert_message_city)
+                .setIcon(R.mipmap.ic_launcher_round)
+                .setCancelable(false)
+                .setPositiveButton(R.string.alert_button_ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                hideError(view);
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+        Toast.makeText(activity, getResources().getString(R.string.alert_error_city), Toast.LENGTH_SHORT).show();
     }
 
     private String getLines(BufferedReader in) {
