@@ -4,6 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <LinearLayout
+        android:id="@+id/loader_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/webView"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"/>
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
@@ -58,7 +72,6 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="8dp"
                     android:src="@drawable/city" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -160,7 +173,6 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
             </androidx.recyclerview.widget.RecyclerView>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -169,14 +181,13 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
             </androidx.recyclerview.widget.RecyclerView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:layout_marginBottom="60dp"
+                android:layout_marginBottom="50dp"
                 android:orientation="horizontal"
                 android:weightSum="10">
 

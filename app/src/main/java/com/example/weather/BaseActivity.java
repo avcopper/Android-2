@@ -2,7 +2,6 @@ package com.example.weather;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity implements Constants {
@@ -19,7 +18,7 @@ public class BaseActivity extends AppCompatActivity implements Constants {
 
     protected boolean isDarkTheme() {
         SharedPreferences sharedPref = getSharedPreferences(SETTINGS, MODE_PRIVATE);
-        return sharedPref.getBoolean(IS_DARK_THEME , true);
+        return sharedPref.getBoolean(IS_DARK_THEME, true);
     }
 
     protected void setDarkTheme(boolean isDarkTheme) {

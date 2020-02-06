@@ -1,6 +1,7 @@
 package com.example.weather.ui.settings;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,9 +12,13 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import com.example.weather.Constants;
 import com.example.weather.R;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment implements Constants {
@@ -44,14 +49,16 @@ public class SettingsFragment extends Fragment implements Constants {
         humidityContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveSettings(HUMIDITY, humidityContainer.isChecked());
+                saveSettings(HUMIDITY_CONTAINER, humidityContainer.isChecked());
+                showDialog(getResources().getString(R.string.alert_message_reboot));
             }
         });
 
         windContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveSettings(WIND, windContainer.isChecked());
+                saveSettings(WIND_CONTAINER, windContainer.isChecked());
+                showDialog(getResources().getString(R.string.alert_message_reboot));
             }
         });
 
@@ -74,6 +81,26 @@ public class SettingsFragment extends Fragment implements Constants {
         });
     }
 
+    private void showDialog(final String message) {
+        final FragmentActivity activity = getActivity();
+        if (activity != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(R.string.alert_header_warning)
+                    .setMessage(message)
+                    .setIcon(R.mipmap.ic_launcher_round)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.alert_button_understand,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
+            Toast.makeText(activity, getResources().getString(R.string.alert_header_warning), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void saveSettings(String name, Boolean value) {
         Activity activity = getActivity();
 
@@ -81,11 +108,18 @@ public class SettingsFragment extends Fragment implements Constants {
             SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
             SharedPreferences.Editor ed = sharedPreferences.edit();
             ed.putBoolean(name, value);
+
             if (name.equals(IS_DARK_THEME)) {
                 ed.putBoolean(THEME_CHANGED, true);
             }
+
+            if (name.equals(WIND_CONTAINER) || name.equals(HUMIDITY_CONTAINER)) {
+                ed.putBoolean(VISIBILITY_CHANGED, true);
+            }
+
             ed.apply();
             Toast.makeText(getActivity(), name + " - " + value, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), VISIBILITY_CHANGED + " - " + true, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -94,8 +128,8 @@ public class SettingsFragment extends Fragment implements Constants {
 
         if (activity != null) {
             SharedPreferences sharedPreferences = activity.getSharedPreferences(SETTINGS, MODE_PRIVATE);
-            humidityContainer.setChecked(sharedPreferences.getBoolean(HUMIDITY, true));
-            windContainer.setChecked(sharedPreferences.getBoolean(WIND, true));
+            humidityContainer.setChecked(sharedPreferences.getBoolean(HUMIDITY_CONTAINER, true));
+            windContainer.setChecked(sharedPreferences.getBoolean(WIND_CONTAINER, true));
 
             if (sharedPreferences.getBoolean(IS_DARK_THEME, true)) {
                 darkTheme.setChecked(true);

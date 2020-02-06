@@ -63,11 +63,16 @@
     <string name="more">Больше</string>
     <string name="action_not_found">Действие не найдено</string>
 
+    <string name="alert_header_error">Ошибка!</string>
+    <string name="alert_header_warning">Внимание!</string>
+    <string name="alert_message_city">Город не найден! Попробуйте ввести другой город.</string>
+    <string name="alert_message_reboot">Изменения вступят в силу после перезагрузки приложения.</string>
+    <string name="alert_button_ok">ОК</string>
+    <string name="alert_button_understand">ПОНЯТНО</string>
+    <string name="alert_error_city">Город не найден!</string>
+    <string name="alert_error_connection">Ощибка соединения!</string>
+    <string name="alert_error_uri">Неверный адрес соединения!</string>
 
-
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
