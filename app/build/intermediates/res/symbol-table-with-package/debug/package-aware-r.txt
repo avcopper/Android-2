@@ -38,6 +38,7 @@ anim nav_default_enter_anim
 anim nav_default_exit_anim
 anim nav_default_pop_enter_anim
 anim nav_default_pop_exit_anim
+anim rotate
 animator design_appbar_state_list_animator
 animator design_fab_hide_motion_spec
 animator design_fab_show_motion_spec
@@ -1114,6 +1115,7 @@ drawable ic_menu_slideshow
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
+drawable loader
 drawable logo
 drawable mtrl_snackbar_background
 drawable mtrl_tabs_default_indicator
@@ -1595,6 +1597,15 @@ string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string action_not_found
 string add
+string alert_button_ok
+string alert_button_understand
+string alert_error_city
+string alert_error_connection
+string alert_error_uri
+string alert_header_error
+string alert_header_warning
+string alert_message_city
+string alert_message_reboot
 string app_name
 string appbar_scrolling_view_behavior
 string author
@@ -1636,8 +1647,6 @@ string nav_app_bar_open_drawer_description
 string nav_header_desc
 string nav_header_subtitle
 string nav_header_title
-string navigation_drawer_close
-string navigation_drawer_open
 string north
 string north_east
 string north_west

@@ -2,10 +2,10 @@ package com.example.weather;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -14,9 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import com.example.weather.recycler.RecyclerAdapterList;
+import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends BaseActivity implements Constants {
+    private final static int REQUEST_CODE = 3;
     private Toolbar toolbar;
     private RecyclerAdapterList adapter = null;
 
@@ -34,7 +37,6 @@ public class HistoryActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        initViews();
         initList();
     }
 
@@ -45,7 +47,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {Log.d("test: ", "click");
         handleMenuItemClick(item);
         return super.onOptionsItemSelected(item);
     }
@@ -62,17 +64,9 @@ public class HistoryActivity extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
-    private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
-
     private void initList() {
-        ArrayList<Integer> data = new ArrayList<>();
-        data.add(1);
-        data.add(2);
-        data.add(3);
-        data.add(4);
+        String[] cities = getResources().getStringArray(R.array.cities_collection);
+        ArrayList<String> data = new ArrayList<>(Arrays.asList(cities));
 
         adapter = new RecyclerAdapterList(data, this);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
@@ -86,32 +80,47 @@ public class HistoryActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.menu_add:
+                adapter.addItem();
+                break;
+
+            case R.id.menu_edit:
+                adapter.editItem(" (ред.)");
+                break;
+
+            case R.id.menu_remove:
+                adapter.removeElement();
+                break;
+
+            case R.id.menu_clear:
+                adapter.clearList();
+                break;
+
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+                break;
+
+            case R.id.action_author:
+                Snackbar.make(toolbar, "Автор: @andrew", Snackbar.LENGTH_LONG)
+                        .setAction("Закрыть", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(HistoryActivity.this.getApplicationContext(), "Snackbar закрыт", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
+                break;
+
+            case R.id.action_history:
+                break;
+
             case android.R.id.home:
             case R.id.action_exit:
                 finish();
                 break;
 
-            case R.id.menu_add: {
-                adapter.addItem();
-                break;
-            }
-            case R.id.menu_edit: {
-                adapter.editItem(2500);
-                break;
-            }
-            case R.id.menu_remove: {
-                adapter.removeElement();
-                break;
-            }
-            case R.id.menu_clear: {
-                adapter.clearList();
-                break;
-            }
-            default: {
+            default:
                 Toast.makeText(getApplicationContext(), getString(R.string.action_not_found), Toast.LENGTH_SHORT).show();
-            }
-
-            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 }

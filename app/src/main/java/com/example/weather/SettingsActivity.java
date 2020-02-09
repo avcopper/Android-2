@@ -39,18 +39,9 @@ public class SettingsActivity extends BaseActivity implements Constants {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-            case R.id.action_exit:
-                finish();
-                return true;
-
+        switch (item.getItemId()) {
             case R.id.action_settings:
-                return true;
+                break;
 
             case R.id.action_author:
                 Snackbar.make(toolbar, "Автор: @andrew", Snackbar.LENGTH_LONG)
@@ -60,11 +51,18 @@ public class SettingsActivity extends BaseActivity implements Constants {
                                 Toast.makeText(SettingsActivity.this.getApplicationContext(), "Snackbar закрыт", Toast.LENGTH_SHORT).show();
                             }
                         }).show();
-                return true;
+                break;
+
+            case android.R.id.home:
+            case R.id.action_exit:
+                setResult(RESULT_OK, new Intent());
+                finish();
+                break;
 
             default:
-                return super.onOptionsItemSelected(item);
+                Toast.makeText(getApplicationContext(), getString(R.string.action_not_found), Toast.LENGTH_SHORT).show();
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -79,9 +77,7 @@ public class SettingsActivity extends BaseActivity implements Constants {
 
     private void showMain(Parcel parcel) {
         Intent intent = new Intent();
-//        intent.putExtra(CITY, inputAddCity.getText().toString());
         intent.putExtra(CITY, parcel);
-
         setResult(RESULT_OK, intent);
         finish();
     }

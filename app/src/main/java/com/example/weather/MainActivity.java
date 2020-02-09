@@ -1,36 +1,27 @@
 package com.example.weather;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import com.example.weather.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.ActivityNavigator;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements Constants {
     private final static int REQUEST_CODE = 1;
+    Intent intent;
     Toolbar toolbar;
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -48,7 +39,7 @@ public class MainActivity extends BaseActivity implements Constants {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Snackbar.make(view, "Hi!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
@@ -64,22 +55,6 @@ public class MainActivity extends BaseActivity implements Constants {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == -1 && requestCode == 1) {
-            SharedPreferences sharedPreferences = getSharedPreferences(SETTINGS, MODE_PRIVATE);
-
-            if (sharedPreferences.getBoolean(THEME_CHANGED, false)) {
-                SharedPreferences.Editor ed = sharedPreferences.edit();
-                ed.putBoolean(THEME_CHANGED, false);
-                ed.apply();
-                recreate();
-            }
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -88,18 +63,17 @@ public class MainActivity extends BaseActivity implements Constants {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings: {
-                Intent intent = new Intent(this, SettingsActivity.class);
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
                 break;
-            }
-            case R.id.action_history: {
 
-                Intent intent = new Intent(this, HistoryActivity.class);
+            case R.id.action_history:
+                intent = new Intent(this, HistoryActivity.class);
                 startActivity(intent);
                 break;
-            }
-            case R.id.action_exit: {
+
+            case R.id.action_exit:
                 Snackbar.make(toolbar ,"Вы уверены?", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Выход" , new View.OnClickListener() {
                             @Override
@@ -108,8 +82,8 @@ public class MainActivity extends BaseActivity implements Constants {
                             }
                         }).show();
                 break;
-            }
-            case R.id.action_author: {
+
+            case R.id.action_author:
                 Snackbar.make(toolbar ,"Автор: @andrew", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Закрыть" , new View.OnClickListener() {
                             @Override
@@ -117,10 +91,12 @@ public class MainActivity extends BaseActivity implements Constants {
                                 Toast.makeText(MainActivity.this.getApplicationContext(),"Snackbar закрыт", Toast.LENGTH_SHORT).show();
                             }
                         }).show();
-                return true ;
-            }
+                break;
 
+            default:
+                Toast.makeText(getApplicationContext(), getString(R.string.action_not_found), Toast.LENGTH_SHORT).show();
         }
+
         return super.onOptionsItemSelected(item);
     }
 

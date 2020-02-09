@@ -8,12 +8,11 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class AddActivity extends AppCompatActivity implements Constants {
+public class AddActivity extends BaseActivity implements Constants {
+    Intent intent;
     private Toolbar toolbar;
 
     @Override
@@ -39,17 +38,12 @@ public class AddActivity extends AppCompatActivity implements Constants {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-            case R.id.action_exit:
-                finish();
-                return true;
+        switch (item.getItemId()) {
 
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
-                return true;
+                break;
 
             case R.id.action_author:
                 Snackbar.make(toolbar, "Автор: @andrew", Snackbar.LENGTH_LONG)
@@ -59,10 +53,17 @@ public class AddActivity extends AppCompatActivity implements Constants {
                                 Toast.makeText(AddActivity.this.getApplicationContext(), "Snackbar закрыт", Toast.LENGTH_SHORT).show();
                             }
                         }).show();
-                return true;
+                break;
+
+            case android.R.id.home:
+            case R.id.action_exit:
+                finish();
+                break;
 
             default:
-                return super.onOptionsItemSelected(item);
+                Toast.makeText(getApplicationContext(), getString(R.string.action_not_found), Toast.LENGTH_SHORT).show();
         }
+
+        return super.onOptionsItemSelected(item);
     }
 }

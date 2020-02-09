@@ -3,8 +3,6 @@ package com.example.weather;
 import java.io.Serializable;
 
 public class Parcel implements Serializable {
-    int dark;
-    int light;
     public Boolean humidityVisibility;
     public Boolean windVisibility;
 
@@ -12,6 +10,10 @@ public class Parcel implements Serializable {
     public String weather;
     public String tempCurrent;
     public String tempRange;
+    public String humidity;
+    public String wind;
+    public String wind_direction;
+    public String updated;
 
     public String[] time;
     public String[] day;

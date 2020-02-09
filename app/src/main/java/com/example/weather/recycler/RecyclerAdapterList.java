@@ -15,10 +15,10 @@ import com.example.weather.ui.history.HistoryFragment;
 import java.util.ArrayList;
 
 public class RecyclerAdapterList extends RecyclerView.Adapter<RecyclerAdapterList.ViewHolder> {
-    private ArrayList<Integer> data;
-    private HistoryActivity activity;
+    private ArrayList<String> data;
+    private Activity activity;
 
-    public RecyclerAdapterList(ArrayList<Integer> data, HistoryActivity activity) {
+    public RecyclerAdapterList(ArrayList<String> data, Activity activity) {
         this.activity = activity;
         if(data != null) {
             this.data = data;
@@ -29,14 +29,14 @@ public class RecyclerAdapterList extends RecyclerView.Adapter<RecyclerAdapterLis
 
     public void addItem() {
         int num = data.size() + 1;
-        data.add(num);
+        data.add("Город " + num);
         notifyItemInserted(data.size() - 1);
     }
 
-    public void editItem(int newNum) {
+    public void editItem(String newStr) {
         if(data.size() > 0) {
             int latestElement = data.size() - 1;
-            data.set(latestElement, newNum);
+            data.set(latestElement, "Город " + data.size() + newStr);
             notifyItemChanged(latestElement);
         }
     }
@@ -57,14 +57,13 @@ public class RecyclerAdapterList extends RecyclerView.Adapter<RecyclerAdapterLis
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_list,
-                viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String text = activity.getString(R.string.element_number) + data.get(position);
+        String text = data.get(position);
         holder.textView.setText(text);
         activity.registerForContextMenu(holder.textView);
     }

@@ -15,4 +15,5 @@ public interface Constants {
     String UPDATED = "updated";
     String IS_DARK_THEME = "IsDarkTheme";
     String THEME_CHANGED = "themeChanged";
+    String VISIBILITY_CHANGED = "visibilityChanged";
 }
