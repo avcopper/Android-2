@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.snackbar.Snackbar;
 
 public class SettingsActivity extends BaseActivity implements Constants {
-    Intent intent;
     private Toolbar toolbar;
 
     @Override
@@ -53,11 +52,6 @@ public class SettingsActivity extends BaseActivity implements Constants {
                             }
                         }).show();
                 break;
-
-//            case R.id.action_history:
-//                intent = new Intent(this, HistoryActivity.class);
-//                startActivity(intent);
-//                break;
 
             case android.R.id.home:
             case R.id.action_exit:

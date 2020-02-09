@@ -18,8 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import com.example.weather.Constants;
+import com.example.weather.Loader;
 import com.example.weather.Parcel;
 import com.example.weather.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,6 +39,7 @@ public class AddFragment extends Fragment implements Constants {
     private static final String WEATHER_API_KEY = "0240835eed185923190f675bf4e672cc";
     private static final String WEATHER_URL_CITY = "https://api.openweathermap.org/data/2.5/weather?units=metric&lang=ru&appid=" + WEATHER_API_KEY + "&q=";
 
+    private Loader loader;
     private TextInputEditText inputAddCity;
     private Pattern checkCity = Pattern.compile("^[a-zA-Zа-яё]{2,}$");
 
@@ -47,9 +48,10 @@ public class AddFragment extends Fragment implements Constants {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        loader       = new Loader();
         inputAddCity = view.findViewById(R.id.input_add_city);
         Button buttonCityAdd = view.findViewById(R.id.button_add_city);
         Button cancel = view.findViewById(R.id.button_cancel_city);

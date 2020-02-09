@@ -15,10 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import com.example.weather.Constants;
 import com.example.weather.R;
-
 import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment implements Constants {

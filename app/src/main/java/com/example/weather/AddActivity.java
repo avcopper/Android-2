@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -55,11 +54,6 @@ public class AddActivity extends BaseActivity implements Constants {
                             }
                         }).show();
                 break;
-
-//            case R.id.action_history:
-//                intent = new Intent(this, HistoryActivity.class);
-//                startActivity(intent);
-//                break;
 
             case android.R.id.home:
             case R.id.action_exit:

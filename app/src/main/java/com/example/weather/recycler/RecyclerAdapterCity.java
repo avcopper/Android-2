@@ -1,6 +1,5 @@
 package com.example.weather.recycler;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.weather.Parcel;
 import com.example.weather.R;
+import android.util.Log;
 
 public class RecyclerAdapterCity extends RecyclerView.Adapter<RecyclerAdapterCity.RecyclerViewHolder> {
     private String[] cities;
@@ -32,8 +32,6 @@ public class RecyclerAdapterCity extends RecyclerView.Adapter<RecyclerAdapterCit
         Parcel parcel = new Parcel();
         parcel.city = cities[position];
         holder.setClicker(parcel);
-
-//        Log.d("test: ", parcel.city);
     }
 
     @Override
@@ -57,9 +55,6 @@ public class RecyclerAdapterCity extends RecyclerView.Adapter<RecyclerAdapterCit
 
                 @Override
                 public void onClick(View v) {
-
-//                    Log.d("test: ", parcel.city);
-
                     if (clickListener != null) {
                         clickListener.onItemClick(parcel);
                     }
